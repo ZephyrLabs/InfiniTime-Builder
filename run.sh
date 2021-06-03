@@ -186,7 +186,6 @@ function modpackapply(){
 
     if dialog --stdout --title "InfiniTime Build" \
           --yesno "Do you want to build this ?" 7 60; then
-            rm -rf InfiniTime
             InfiniTimeBuild
     fi
 
