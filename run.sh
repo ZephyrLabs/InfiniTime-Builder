@@ -47,7 +47,7 @@ function main(){
     
     elif [ $selection == 3 ];
     then
-        modpackapply        
+        ModpackApply
 
     elif [ $selection == 4 ];
     then
@@ -99,58 +99,64 @@ function InfiniTimeBuild(){
             fi
 
             dialog --title Information[!] --msgbox "\nBuild exited\ncheck $dir/Infinitime/build/src/ for Build result" 10 40
-    fi 
+
+            cd $dir
+    fi
+
+    return
 }
 
 function ToolchainSetup(){
 
-local dir=$(pwd)
+    local dir=$(pwd)
 
-if [ -d $dir/buildtools/gcc-arm-none-eabi ] && [ -d $dir/buildtools/nrf5_sdk ];
-then 
-    dialog --title Information[!] --msgbox "\nCompiler and toolchain are already downloaded" 10 30;sleep 1
+    if [ -d $dir/buildtools/gcc-arm-none-eabi ] && [ -d $dir/buildtools/nrf5_sdk ];
+    then 
+        dialog --title Information[!] --msgbox "\nCompiler and toolchain are already downloaded" 10 30;sleep 1
+        return
+    fi
+
+    mkdir buildtools
+
+    dialog --title Information[!] --infobox "\nChecking Architecture" 10 30;sleep 1
+    arch=$(arch)
+
+    if [ $arch == "x86_64" ]; 
+    then 
+    dialog --title Information[!] --infobox "\nDownloading for x86_64\nplease wait..." 10 30
+    curl -s https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2 -o gcc-arm-none-eabi.tar.bz2
+
+    elif [ $arch == "aarch64" ];
+    then
+    dialog --title Information[!] --infobox "\nDownloading for Aarch64\nplease wait" 10 30
+    curl -s https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-aarch64-linux.tar.bz2 -o gcc-arm-none-eabi.tar.bz2
+
+    else
+    dialog --title Information[!] --infobox "\ncompatible compiler not found!!!" 10 30;sleep 3
     return
-fi
 
-mkdir buildtools
+    fi
 
-dialog --title Information[!] --infobox "\nChecking Architecture" 10 30;sleep 1
-arch=$(arch)
+    dialog --title Information[!] --infobox "\nExtracting\nplease wait..." 10 30
+    tar -xf gcc-arm-none-eabi.tar.bz2
 
-if [ $arch == "x86_64" ]; 
-then 
-dialog --title Information[!] --infobox "\nDownloading for x86_64\nplease wait..." 10 30
-curl -s https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2 -o gcc-arm-none-eabi.tar.bz2
+    mv gcc-arm-none-eabi-9-2020-q2-update buildtools/gcc-arm-none-eabi
 
-elif [ $arch == "aarch64" ];
-then
-dialog --title Information[!] --infobox "\nDownloading for Aarch64\nplease wait" 10 30
-curl -s https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-aarch64-linux.tar.bz2 -o gcc-arm-none-eabi.tar.bz2
+    dialog --title Information[!] --infobox "\nDownloading Toolchain\nplease wait..." 10 30
+    curl -s https://developer.nordicsemi.com/nRF5_SDK/nRF5_SDK_v15.x.x/nRF5_SDK_15.3.0_59ac345.zip -o nrf5_sdk.zip
+    unzip -q nrf5_sdk.zip
+    mv nRF5_SDK_15.3.0_59ac345 buildtools/nrf5_sdk
 
-else
-dialog --title Information[!] --infobox "\ncompatible compiler not found!!!" 10 30;sleep 3
-return
+    dialog --title Information[!] --infobox "\nCleaning up..." 10 30
+    rm -f gcc-arm-none-eabi.tar.bz2
+    rm -f nrf5_sdk.zip
 
-fi
+    dialog --title Information[!] --msgbox "\nDone!" 10 30; sleep 3
 
-dialog --title Information[!] --infobox "\nExtracting\nplease wait..." 10 30
-tar -xf gcc-arm-none-eabi.tar.bz2
-
-mv gcc-arm-none-eabi-9-2020-q2-update buildtools/gcc-arm-none-eabi
-
-dialog --title Information[!] --infobox "\nDownloading Toolchain\nplease wait..." 10 30
-curl -s https://developer.nordicsemi.com/nRF5_SDK/nRF5_SDK_v15.x.x/nRF5_SDK_15.3.0_59ac345.zip -o nrf5_sdk.zip
-unzip -q nrf5_sdk.zip
-mv nRF5_SDK_15.3.0_59ac345 buildtools/nrf5_sdk
-
-dialog --title Information[!] --infobox "\nCleaning up..." 10 30
-rm -f gcc-arm-none-eabi.tar.bz2
-rm -f nrf5_sdk.zip
-
-dialog --title Information[!] --msgbox "\nDone!" 10 30; sleep 3
+    return
 }
 
-function modpackapply(){
+function ModpackApply(){
     local dir=$(pwd)
 
     if [ ! -d $dir/InfiniTime ];
@@ -179,17 +185,17 @@ function modpackapply(){
         dialog --title Information[!] --infobox "\nApplying ${FILE}\nto InfiniTime..." 10 30;sleep 2
 
         unzip -q ${FILE} 
-        cp $dir/modpack/src -r $dir/InfiniTime
-        rm -rf $dir/modpack
+        cp $dir/Modpack/src -r $dir/InfiniTime
+        rm -rf $dir/Modpack
         dialog --title Information[!] --infobox "\nApplied!" 10 30;sleep 2
     fi
 
     if dialog --stdout --title "InfiniTime Build" \
           --yesno "Do you want to build this ?" 7 60; then
-            rm -rf InfiniTime
             InfiniTimeBuild
     fi
 
+    return
 }
 
 while :
