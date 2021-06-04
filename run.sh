@@ -168,13 +168,13 @@ function modpackapply(){
         return
     fi
 
-    if [ ${FILE: -4} != '.zip' ];
+    if [ ${FILE: -11} != 'Modpack.zip' ];
     then
         dialog --title Information[!] --infobox "\nInvalid file type!" 10 30;sleep 2
         return
     fi
 
-    if [ ${FILE: -4} == '.zip' ];
+    if [ ${FILE: -11} == 'Modpack.zip' ];
     then
         dialog --title Information[!] --infobox "\nApplying ${FILE}\nto InfiniTime..." 10 30;sleep 2
 
