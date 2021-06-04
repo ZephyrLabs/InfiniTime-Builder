@@ -89,12 +89,12 @@ function InfiniTimeBuild(){
             if [ $selection == 1 ];
             then
                 dialog --title Information[!] --infobox "\nSetting up Build environment\nplease wait..." 10 30;sleep 1
-                cmake -DARM_NONE_EABI_TOOLCHAIN_PATH=$dir/buildtools/gcc-arm-none-eabi -DNRF5_SDK_PATH=$dir/nrf5_sdk -DNRFJPROG=/opt/nrfjprog/nrfjprog -DBUILD_DFU=1 ../
+                cmake -DARM_NONE_EABI_TOOLCHAIN_PATH=$dir/buildtools/gcc-arm-none-eabi -DNRF5_SDK_PATH=$dir/buildtools/nrf5_sdk -DNRFJPROG=/opt/nrfjprog/nrfjprog -DBUILD_DFU=1 ../
                 make -j8 pinetime-mcuboot-app
             elif [ $selection == 2 ];
             then
                 dialog --title Information[!] --infobox "\nSetting up Build environment\nplease wait..." 10 30;sleep 1
-                cmake -DARM_NONE_EABI_TOOLCHAIN_PATH=$dir/buildtools/gcc-arm-none-eabi -DNRF5_SDK_PATH=$dir/nrf5_sdk -DUSE-OPENOCD=1 ../
+                cmake -DARM_NONE_EABI_TOOLCHAIN_PATH=$dir/buildtools/gcc-arm-none-eabi -DNRF5_SDK_PATH=$dir/buildtools/nrf5_sdk -DNRFJPROG=/opt/nrfjprog/nrfjprog -DUSE-OPENOCD=1 ../
                 make -j8 pinetime-mcuboot-app
             fi
 
@@ -168,13 +168,13 @@ function modpackapply(){
         return
     fi
 
-    if [ ${FILE: -11} != 'Modpack.zip' ];
+    if [ ${FILE: -4} != '.zip' ];
     then
         dialog --title Information[!] --infobox "\nInvalid file type!" 10 30;sleep 2
         return
     fi
 
-    if [ ${FILE: -11} == 'Modpack.zip' ];
+    if [ ${FILE: -4} == '.zip' ];
     then
         dialog --title Information[!] --infobox "\nApplying ${FILE}\nto InfiniTime..." 10 30;sleep 2
 
@@ -186,6 +186,7 @@ function modpackapply(){
 
     if dialog --stdout --title "InfiniTime Build" \
           --yesno "Do you want to build this ?" 7 60; then
+            rm -rf InfiniTime
             InfiniTimeBuild
     fi
 
