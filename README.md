@@ -33,23 +33,25 @@ customizing your InfiniTime build and are simple to create and redistribute
 an example structure of a Modpack is something like this:
 ```
 
-Modpack.zip
-|
-|\__ preview.png
-|
- \__ src
-        |
-        |\__ displayapp
-        |              |
-        |              |\__ screens
-        |              |           |\__ WatchfaceAnalog.cpp
-        |              |           |
-        |              |           \__ WatchFaceDigital.cpp
-        |              \__ icons
-        |                       |
-         \__ systemtask         \__ bg_clock.c
-                       |
-                        \__ SystemTask.cpp
+something-Modpack.zip
+                     |
+                     \__Modpack
+                            |
+                            |\__ preview.png
+                            |
+                            \__ src
+                                   |
+                                   |\__ displayapp
+                                   |              |
+                                   |              |\__ screens
+                                   |              |           |\__ WatchfaceAnalog.cpp
+                                   |              |           |
+                                   |              |           \__ WatchFaceDigital.cpp
+                                   |              \__ icons
+                                   |                       |
+                                   \__ systemtask         \__ bg_clock.c
+                                                 |
+                                                 \__ SystemTask.cpp
 ```
 
 all modified files are in the correct directory order inside the 
