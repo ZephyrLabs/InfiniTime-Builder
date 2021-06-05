@@ -44,7 +44,7 @@ Modpack.zip
         |              |\__ screens
         |              |           |\__ WatchfaceAnalog.cpp
         |              |           |
-        |              |           \__ WatchFace Digital.cpp
+        |              |           \__ WatchFaceDigital.cpp
         |              \__ icons
         |                       |
          \__ systemtask         \__ bg_clock.c
