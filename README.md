@@ -49,7 +49,7 @@ something-Modpack.zip
                                    |              |           \__ WatchFaceDigital.cpp
                                    |              \__ icons
                                    |                       |
-                                   \__ systemtask         \__ bg_clock.c
+                                   \__ systemtask          \__ bg_clock.c
                                                  |
                                                  \__ SystemTask.cpp
 ```
