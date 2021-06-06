@@ -8,9 +8,9 @@ get it with:
 `git clone https://github.com/ZephyrLabs/InfiniTime-Builder.git`
 
 to build firmware, make sure you have installed:
-* cmake
-* python3
-* python3-pip cbor, intelhex, adafruit-nrfutil
+* from your choice of package manager -> wget, curl, cmake, python3, python3-pip, dialog
+* from python3-pip -> cbor, intelhex, adafruit-nrfutil
+
 
 run it with:
 ```
