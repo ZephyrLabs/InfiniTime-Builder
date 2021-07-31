@@ -52,6 +52,7 @@ function main(){
     elif [ $selection == 4 ];
     then
         dialog --title Information[!] --infobox "\nExiting..." 10 30;sleep 1
+        clear
         exit
     fi
 }
