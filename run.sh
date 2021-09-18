@@ -9,6 +9,7 @@ then
     echo starting...
 else
     dialog --title Information[!] --msgbox "\nPlease connect to the Internet!!" 10 30;
+    clear
     exit
 fi
 
@@ -30,26 +31,28 @@ function main(){
 
     local selection=$(<"$input")
 
-    if [ $selection == 1 ];
+    if [ "$selection" == 1 ];
     then
         if [ -d $dir/InfiniTime ];
         then
             if dialog --stdout --title "InfiniTime Build" \
-            --yesno "Create build from scratch ?" 7 60; then
+            --yesno "Create build from scratch ?" 7 60;
+            then
                 rm -rf InfiniTime
             fi
+
             InfiniTimeBuild
         fi
 
-    elif [ $selection == 2 ];
+    elif [ "$selection" == 2 ];
     then
         ToolchainSetup
     
-    elif [ $selection == 3 ];
+    elif [ "$selection" == 3 ];
     then
         ModpackApply
 
-    elif [ $selection == 4 ];
+    elif [ "$selection" == 4 ];
     then
         dialog --title Information[!] --infobox "\nExiting..." 10 30;sleep 1
         clear
@@ -63,9 +66,8 @@ function InfiniTimeBuild(){
 
     if [ ! -d $dir/buildtools/gcc-arm-none-eabi ] || [ ! -d $dir/buildtools/nrf5_sdk ];
     then
-        dialog --title Information[!] --infobox "\nMissing Compiler or Toolchain!!!" 10 30
+        dialog --title Information[!] --infobox "\nMissing Compiler or Toolchain!!!" 10 30;sleep 1
     else
-
         dialog --title Information[!] --infobox "\nGetting Latest source\nplease wait..." 10 30;sleep 1
         git clone https://github.com/JF002/InfiniTime.git --recurse-submodules
 
@@ -85,23 +87,23 @@ function InfiniTimeBuild(){
             2 "mcuboot-app" \
             2>$input
 
-            local selection=$(<"$input")
+        local selection=$(<"$input")
 
-            if [ $selection == 1 ];
-            then
-                dialog --title Information[!] --infobox "\nSetting up Build environment\nplease wait..." 10 30;sleep 1
-                cmake -DARM_NONE_EABI_TOOLCHAIN_PATH=$dir/buildtools/gcc-arm-none-eabi -DNRF5_SDK_PATH=$dir/buildtools/nrf5_sdk -DNRFJPROG=/opt/nrfjprog/nrfjprog -DBUILD_DFU=1 ../
-                make -j8 pinetime-mcuboot-app
-            elif [ $selection == 2 ];
-            then
-                dialog --title Information[!] --infobox "\nSetting up Build environment\nplease wait..." 10 30;sleep 1
-                cmake -DARM_NONE_EABI_TOOLCHAIN_PATH=$dir/buildtools/gcc-arm-none-eabi -DNRF5_SDK_PATH=$dir/buildtools/nrf5_sdk -DNRFJPROG=/opt/nrfjprog/nrfjprog -DUSE-OPENOCD=1 ../
-                make -j8 pinetime-mcuboot-app
-            fi
+        if [ $selection == 1 ];
+        then
+            dialog --title Information[!] --infobox "\nSetting up Build environment\nplease wait..." 10 30;sleep 1
+            cmake -DARM_NONE_EABI_TOOLCHAIN_PATH=$dir/buildtools/gcc-arm-none-eabi -DNRF5_SDK_PATH=$dir/buildtools/nrf5_sdk -DNRFJPROG=/opt/nrfjprog/nrfjprog -DBUILD_DFU=1 ../
+            make -j8 pinetime-mcuboot-app
+        elif [ $selection == 2 ];
+        then
+            dialog --title Information[!] --infobox "\nSetting up Build environment\nplease wait..." 10 30;sleep 1
+            cmake -DARM_NONE_EABI_TOOLCHAIN_PATH=$dir/buildtools/gcc-arm-none-eabi -DNRF5_SDK_PATH=$dir/buildtools/nrf5_sdk -DNRFJPROG=/opt/nrfjprog/nrfjprog -DUSE-OPENOCD=1 ../
+            make -j8 pinetime-mcuboot-app
+        fi
 
-            dialog --title Information[!] --msgbox "\nBuild exited\ncheck $dir/Infinitime/build/src/ for Build result" 10 40
+        dialog --title Information[!] --msgbox "\nBuild exited\ncheck $dir/Infinitime/build/src/ for Build result" 10 40
 
-            cd $dir
+        cd $dir
     fi
 
     return
@@ -122,12 +124,12 @@ function ToolchainSetup(){
     dialog --title Information[!] --infobox "\nChecking Architecture" 10 30;sleep 1
     arch=$(arch)
 
-    if [ $arch == "x86_64" ]; 
+    if [ "$arch" == "x86_64" ]; 
     then 
     dialog --title Information[!] --infobox "\nDownloading for x86_64\nplease wait..." 10 30
     curl -s https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2 -o gcc-arm-none-eabi.tar.bz2
 
-    elif [ $arch == "aarch64" ];
+    elif [ "$arch" == "aarch64" ];
     then
     dialog --title Information[!] --infobox "\nDownloading for Aarch64\nplease wait" 10 30
     curl -s https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-aarch64-linux.tar.bz2 -o gcc-arm-none-eabi.tar.bz2
@@ -160,7 +162,7 @@ function ToolchainSetup(){
 function ModpackApply(){
     local dir=$(pwd)
 
-    if [ ! -d $dir/InfiniTime ];
+    if [ ! -d "$dir"/InfiniTime ];
     then
         dialog --title Information[!] --infobox "\nInfiniTime directory doesn't exist!" 10 30;sleep 2
         return
@@ -168,26 +170,26 @@ function ModpackApply(){
 
     FILE=$(dialog --title "Modpack" --stdout --title "Select Modpack" --fselect ${HOME} 14 48)
 
-    if [ -d ${FILE} ] && [ -d ${FILE}/src ];
+    if [ -d "${FILE}" ] && [ -d "${FILE}"/src ];
     then
-        cp ${FILE}/src -r $dir/InfiniTime
+        cp "${FILE}"/src -r "$dir"/InfiniTime
         dialog --title Information[!] --infobox "\nApplied!" 10 30;sleep 2
         return
     fi
 
-    if [ ${FILE: -4} != '.zip' ];
+    if [ "${FILE: -4}" != '.zip' ];
     then
         dialog --title Information[!] --infobox "\nInvalid file type!" 10 30;sleep 2
         return
     fi
 
-    if [ ${FILE: -4} == '.zip' ];
+    if [ "${FILE: -4}" == '.zip' ];
     then
         dialog --title Information[!] --infobox "\nApplying ${FILE}\nto InfiniTime..." 10 30;sleep 2
 
         unzip -q ${FILE} 
-        cp $dir/Modpack/src -r $dir/InfiniTime
-        rm -rf $dir/Modpack
+        cp "$dir"/Modpack/src -r "$dir"/InfiniTime
+        rm -rf "$dir"/Modpack
         dialog --title Information[!] --infobox "\nApplied!" 10 30;sleep 2
     fi
 
